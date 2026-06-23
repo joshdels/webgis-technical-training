@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Philippines Watersheds</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+      body,
+      html,
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      #map {
+        height: calc(100vh - 4rem);
+        z-index: 10;
+      }
+
+      nav {
+        height: 2rem;
+        padding: 1rem;
+      }
+
+      #map-container {
+        position: relative;
+      }
+
+      #floating {
+        position: absolute;
+        z-index: 100;
+        top: 90px;
+        right: 20px;
+        padding: 2rem;
+        background-color: white;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map-container">
+      <nav><h1>Philippines Watersheds</h1></nav>
+      <div id="map"></div>
+      <div id="floating">
+        <h3>Total Catchment</h3>
+        <h1 id="length"></h1>
+      </div>
+    </div>
+
+    <script>
+      const map = L.map("map").setView([12.8797, 121.774], 6);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+
+      function fillLengthNumber(content) {
+        document.getElementById("length").innerText = content;
+      }
+
+      fetch("../../data/watershed.geojson")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const length = data.features.length;
+          fillLengthNumber(length);
+
+          L.geoJSON(data, {
+            style: {
+              color: "#0066cc",
+              weight: 2,
+              fillOpacity: 0.3,
+            },
+            onEachFeature: function (feature, layer) {
+              const name = feature.properties.New_Name || "Unknown watershed";
+              const area = feature.properties.Catch_area || "Unknown Area";
+
+              layer.bindPopup(`<h3>${name}</h3> <p>Area: ${area} m2 </p>`);
+            },
+          }).addTo(map);
+        })
+        .catch((err) => {
+          console.error("FAILED TO LOAD GEOJSON:", err);
+        });
+    </script>
+  </body>
+</html>

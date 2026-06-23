@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My First Webmap</title>
+  </head>
+
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: gainsboro;
+      gap: 2rem;
+      height: 100px;
+    }
+
+    #logo {
+      width: 80px;
+      height: auto;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #content-container {
+      display: flex;
+      min-height: calc(100vh - 100px);
+    }
+
+    aside {
+      flex: 1;
+      padding: 1rem;
+    }
+
+    #map {
+      flex: 6;
+      background: gray;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #map img {
+      width: 100%;
+      height: calc(100vh - 100px);
+      object-fit: fill;
+      display: block;
+    }
+  </style>
+
+  <body>
+    <div id="container">
+      <nav>
+        <img
+          id="logo"
+          src="https://t4.ftcdn.net/jpg/05/53/45/99/360_F_553459926_HJBqResLeEj1JC3nyXctuYOil3JjdPlN.jpg"
+          alt="logo"
+        />
+        <h1>My First WebMap</h1>
+      </nav>
+      <div id="content-container">
+        <aside id="sidebar">
+          <h2>Sidebar</h2>
+          <input type="text" />
+          <button>search</button>
+        </aside>
+        <main id="map">
+          <img
+            src="https://m.media-amazon.com/images/I/71ZVA6QfbOL._AC_UF894,1000_QL80_.jpg"
+            alt="map"
+          />
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

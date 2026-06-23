@@ -1,0 +1,16 @@
+html,
+body,
+* {
+  padding: 0;
+  margin: 0;
+}
+
+#map {
+  height: calc(100vh - 100px);
+  background-color: rgb(220, 245, 240);
+}
+
+nav {
+  padding: 2rem;
+  height: calc(100px - 4rem);
+}

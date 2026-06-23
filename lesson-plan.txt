@@ -1,17 +1,17 @@
 0. Installation - LiveView, VSCODE, GITHUB
-1. introduction
+1. introduction (done)
   - they will add a favorite map in css html (no js)
   - then slowly introduce leaflet
 2. Architecture of WebGIS, What is webgis, 
   - NO Ai yet
   - Mindsets and myths
-3. Overview of final product
+2.1. Overview of final product
   - 1 webgis with dashboard, population - leaflet and chartjs
   - 2 webgis maplibre 3d trails mountains (with popup pictures)
   - real work
     - html - learning containers and css - moving the box
     - assignment --> 
-4. Javascripts --> basic - (DONE)
+3. Javascripts --> basic - (DONE)
   a. variables/let/const
   b. conditions -if, else, else if
   c. arrays, jsons, objects
@@ -26,16 +26,16 @@
   --> Exercises
   - load a dark basemap with a zoom + geoenconder?
   - widgets (maplibre)
-6. Fetching Live Data
+4. Fetching Live Data
   - ajax, fetch and awaits
   - fetch the coordinates --- hmmm thinking of data (eq)
-7. Project 1
+6. Project 1
   - Population Data
-8. Project 2
+6. Project 2
   - Mountain 3D maplibre spots
-9. Charjs---- 
+7. Charjs---- 
   - continue project 1
   - add charts to the population
-10. using QGIS QGIS2Web
-11. Modifying ChatGPT webmap
+9. using QGIS QGIS2Web
+10. Modifying ChatGPT webmap
 

@@ -1,0 +1,15 @@
+html,
+body,
+* {
+  padding: 0;
+  margin: 0;
+}
+
+#map {
+  height: calc(100vh - 100px);
+}
+
+nav {
+  padding: 2rem;
+  height: calc(100px - 4rem);
+}

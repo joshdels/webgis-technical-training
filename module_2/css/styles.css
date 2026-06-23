@@ -1,0 +1,31 @@
+.red {
+  color: red;
+  font-size: 2rem;
+}
+
+#blue {
+  color: white;
+  background-color: blue;
+}
+
+#padding {
+  padding: 10px;
+  background-color: blueviolet;
+}
+
+/* Flexbox */
+#flex-box {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#box1 {
+  flex: 5;
+  background-color: blue;
+}
+
+#box2 {
+  flex: 1;
+  background-color: red;
+}
