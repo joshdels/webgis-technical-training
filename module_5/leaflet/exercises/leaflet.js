@@ -1,5 +1,4 @@
 /*
-
 1. Mangroves Data 
 url -> "https://geoserver.geoportal.gov.ph/geoserver/wms"
 layer -> "geoportal:mangrove_forest"

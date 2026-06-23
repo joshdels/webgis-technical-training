@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body>
+    <canvas id="barChart"></canvas>
+    <canvas id="pieChart"></canvas>
+
+    <script>
+      new Chart(document.getElementById("barChart"), {
+        type: "bar",
+        data: {
+          labels: ["Forest", "Urban", "Agriculture"],
+          datasets: [
+            {
+              label: "Number of Areas",
+              data: [12, 8, 15],
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("pieChart"), {
+        type: "pie",
+        data: {
+          labels: ["Forest", "Urban", "Agriculture"],
+          datasets: [
+            {
+              label: "Number of Areas",
+              data: [12, 8, 15],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

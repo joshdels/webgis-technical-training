@@ -33,6 +33,9 @@ var line = L.polyline(latlngs, { color: "red", weight: 3 }).addTo(map);
 var baseMaps = { "Open Layer": openlayer, "Dark Layer": darklayer };
 var layers = { Marker: marker, Line: line };
 
+
+
+
 // ADVANCE STUFFS MAP CONTROLS
 // ZOOM
 L.control

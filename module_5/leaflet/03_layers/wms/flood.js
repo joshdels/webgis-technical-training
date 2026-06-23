@@ -13,7 +13,7 @@ var flood10k = L.tileLayer
     layers: "geoportal:flood10ksuscep",
     format: "image/png",
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.9,
     version: "1.1.1",
     attribution: "MGB / Geoportal Philippines",
   })

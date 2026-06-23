@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Leaflet + Weather Chart Overlay</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <main id="map"></main>
+
+      <aside id="sidebar">
+        <h1>Open Weather</h1>
+        <h3 id="daily-barChart">Daily Weather of Philippines</h3>
+        <canvas id="chart"></canvas>
+      </aside>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>

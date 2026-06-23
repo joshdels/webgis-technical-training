@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Philippines City Boundaries (Leaflet)</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+
+      .info {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1000;
+        background: white;
+        padding: 10px 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="info">
+      🇵🇭 Philippines City/Municipality Boundaries<br />
+      Hover to highlight
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+      // 1. Initialize map centered on Philippines
+      const map = L.map("map").setView([12.8797, 121.774], 6);
+
+      // 2. Base map (FIXED tile URL)
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+      }).addTo(map);
+
+      let geoLayer;
+
+      // 3. Style function
+      function style(feature) {
+        return {
+          color: "#2563eb",
+          weight: 1,
+          fillColor: "#60a5fa",
+          fillOpacity: 0.4,
+        };
+      }
+
+      function highlightFeature(e) {
+        const layer = e.target;
+        layer.setStyle({
+          weight: 2,
+          color: "#ff0000",
+          fillOpacity: 0.6,
+        });
+        layer.bringToFront();
+      }
+
+      function resetHighlight(e) {
+        geoLayer.resetStyle(e.target);
+      }
+
+      function onEachFeature(feature, layer) {
+        layer.on({
+          mouseover: highlightFeature,
+          mouseout: resetHighlight,
+        });
+
+        if (feature.properties) {
+          const name =
+            feature.properties.NAME_3 ||
+            feature.properties.name ||
+            feature.properties.ADM3_EN ||
+            "Unknown";
+
+          layer.bindPopup(`<b>${name}</b>`);
+        }
+      }
+
+      // 4. Load Philippines city/municipality GeoJSON (immediate load)
+      fetch(
+        "https://raw.githubusercontent.com/faeldon/philippines-json-maps/master/2021/geojson/municipalities.json",
+      )
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to load GeoJSON");
+          return res.json();
+        })
+        .then((data) => {
+          geoLayer = L.geoJSON(data, {
+            style,
+            onEachFeature,
+          }).addTo(map);
+
+          map.fitBounds(geoLayer.getBounds());
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("Failed to load Philippines boundaries data.");
+        });
+    </script>
+  </body>
+</html>

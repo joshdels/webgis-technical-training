@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Philippines City & Municipal Boundaries</title>
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        font-family: Arial, sans-serif;
+      }
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+      .info-legend {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        font-size: 14px;
+        line-height: 18px;
+      }
+      .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading" class="loading-overlay">
+      Loading Official Philippines Boundaries...
+    </div>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <script>
+      // Initialize the map centered on the Philippines geography
+      const map = L.map("map").setView([12.8797, 121.774], 6);
+
+      // Add a clean, lightweight basemap background
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: "abcd",
+          maxZoom: 20,
+        },
+      ).addTo(map);
+
+      // Style function for the city/municipality polygons
+      function styleFeature(feature) {
+        return {
+          fillColor: "#3498db",
+          weight: 1,
+          opacity: 1,
+          color: "#2980b9",
+          fillOpacity: 0.2,
+        };
+      }
+
+      // Highlight boundary on mouse hover
+      function highlightFeature(e) {
+        const layer = e.target;
+        layer.setStyle({
+          weight: 2,
+          color: "#e74c3c",
+          fillColor: "#e74c3c",
+          fillOpacity: 0.4,
+        });
+        layer.bringToFront();
+      }
+
+      // Reset boundary style when mouse leaves
+      let geojsonLayer;
+      function resetHighlight(e) {
+        geojsonLayer.resetStyle(e.target);
+      }
+
+      // Bind popups showing the official names
+      function onEachFeature(feature, layer) {
+        if (feature.properties) {
+          // Adjust property tags based on standard HDX/OCHA attributes (ADM3_EN or NAME_3)
+          const cityName =
+            feature.properties.ADM3_EN ||
+            feature.properties.NAME_3 ||
+            "Unknown Local Government";
+          const provinceName =
+            feature.properties.ADM2_EN || feature.properties.NAME_2 || "";
+
+          layer.bindPopup(
+            `<strong>City/Municipality:</strong> ${cityName}<br><strong>Province:</strong> ${provinceName}`,
+          );
+        }
+
+        layer.on({
+          mouseover: highlightFeature,
+          mouseout: resetHighlight,
+        });
+      }
+
+      // Fetch official accurate administrative level 3 (cities/municipalities) boundaries from open source mirror
+      // This uses OCHA/HDX vetted data to avoid manual coordinate mapping mistakes
+      fetch(
+        "https://raw.githubusercontent.com/faeldon/philippines-json-maps/master/2023/geojson/clsu/municipality.gov.json",
+      )
+        .then((response) => {
+          if (!response.ok) throw new Error("Network response was not ok");
+          return response.json();
+        })
+        .then((data) => {
+          geojsonLayer = L.geoJSON(data, {
+            style: styleFeature,
+            onEachFeature: onEachFeature,
+          }).addTo(map);
+
+          // Hide the loading screen once shapes render
+          document.getElementById("loading").style.display = "none";
+        })
+        .catch((error) => {
+          console.error("Error loading the GeoJSON data:", error);
+          document.getElementById("loading").innerText =
+            "Failed to load boundaries. Check internet connection.";
+        });
+
+      // Add a title legend overlay
+      const legend = L.control({ position: "topright" });
+      legend.onAdd = function (map) {
+        const div = L.DomUtil.create("div", "info-legend");
+        div.innerHTML =
+          "<h4>PH Local Government Boundaries</h4><p>Hover over a boundary to highlight.<br>Click to reveal the City/Municipality name.</p>";
+        return div;
+      };
+      legend.addTo(map);
+    </script>
+  </body>
+</html>
