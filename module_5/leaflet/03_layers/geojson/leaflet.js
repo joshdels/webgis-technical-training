@@ -13,7 +13,7 @@ var popup = L.popup()
   .openOn(map);
 
   // GEOJSONLAYERS
-fetch("../../../data/watershed.geojson")
+fetch("../../../../data/watershed.geojson")
   .then((response) => {
     return response.json();
   })
@@ -33,5 +33,5 @@ fetch("../../../data/watershed.geojson")
     }).addTo(map);
   })
   .catch((err) => {
-    console.error("FAILED TO LOAD GEOJSON:", err);
+    console.error("GeoJSON Data can't be loaded:", err);
   });
