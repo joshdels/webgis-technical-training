@@ -1,131 +1,127 @@
-const map = L.map("map").setView([6.1, 125.2], 15);
-
+const map = L.map("map").setView([52.52, 13.41], 5);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap",
+  attribution: "&copy; OpenStreetMap contributors",
 }).addTo(map);
 
-// ---------------- LAYERS ----------------
-let circleLayer;
-let featureLayer = L.layerGroup().addTo(map);
+let chart1Instance;
+let chart2Instance;
 
-// ---------------- CHART ----------------
-let chart;
-
-// category → color map
-const colorMap = {};
-
-// generate random color
-function randomColor() {
-  return `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`;
-}
-
-// ---------------- FETCH OSM DATA ----------------
-async function fetchOSM(lat, lng, radius) {
-  const query = `
-[out:json];
-(
-  node["amenity"](around:${radius},${lat},${lng});
-);
-out;
-`;
-
-  const url =
-    "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
-
+async function loadWeather(lat, lon, showPopup = true) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&&daily=temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum&past_days=7&timezone=auto`;
   const res = await fetch(url);
   const data = await res.json();
 
-  return data.elements;
-}
+  const labels = data.daily.time;
+  const maxTemp = data.daily.temperature_2m_max;
+  const minTemp = data.daily.temperature_2m_min;
+  const windSpeed = data.daily.wind_speed_10m_max;
+  const precipitation = data.daily.precipitation_sum;
+  const city = data.timezone.split("/")[1];
 
-// ---------------- PROCESS + LAYERS ----------------
-function processAndRender(elements) {
-  const counts = {};
+  const todayMax = maxTemp[7];
+  const todayMin = minTemp[7];
+  const todayWind = windSpeed[7];
+  const todayPrecip = precipitation[7];
 
-  featureLayer.clearLayers();
+  document.querySelector("#daily-barChart h3").textContent =
+    `Daily Weather of ${city}`;
 
-  elements.forEach((el) => {
-    const type = el.tags.amenity || "unknown";
+  if (showPopup) {
+    L.popup()
+      .setLatLng([lat, lon])
+      .setContent(
+        `
+        <b>${city}'s Today Weather</b> <br>
+        Temp: ${todayMin}°C - ${todayMax}°C <br>
+        Wind: ${todayWind} kph <br>
+        Precipitation: ${todayPrecip} mm
+      `,
+      )
+      .openOn(map);
+  }
 
-    counts[type] = (counts[type] || 0) + 1;
+  if (chart1Instance) chart1Instance.destroy();
+  if (chart2Instance) chart2Instance.destroy();
 
-    // assign stable color per category
-    if (!colorMap[type]) {
-      colorMap[type] = randomColor();
-    }
+  const ctx2 = document.getElementById("chart2").getContext("2d");
 
-    // add map marker with SAME color
-    if (el.lat && el.lon) {
-      L.circleMarker([el.lat, el.lon], {
-        radius: 6,
-        color: colorMap[type],
-        fillColor: colorMap[type],
-        fillOpacity: 0.9,
-        weight: 2,
-      })
-        .bindPopup(type)
-        .addTo(featureLayer);
-    }
-  });
-
-  updateChart(counts);
-}
-
-// ---------------- CHART ----------------
-function updateChart(data) {
-  const labels = Object.keys(data);
-  const values = Object.values(data);
-
-  const colors = labels.map((l) => colorMap[l]);
-
-  if (chart) chart.destroy();
-
-  chart = new Chart(document.getElementById("chart"), {
-    type: "bar",
-
+  chart2Instance = new Chart(ctx2, {
+    type: "line",
     data: {
-      labels,
+      labels: labels,
       datasets: [
         {
-          data: values,
-          backgroundColor: colors,
-          borderColor: "#ffffff",
-          borderWidth: 2,
+          label: "Max Temp (°C)",
+          data: maxTemp,
+          borderColor: "red",
+          backgroundColor: "red",
+          fill: false,
+        },
+        {
+          label: "Min Temp (°C)",
+          data: minTemp,
+          borderColor: "yellow",
+          backgroundColor: "yellow",
+          fill: false,
+        },
+        {
+          label: "Precipitation (mm)",
+          data: precipitation,
+          borderColor: "blue",
+          backgroundColor: "blue",
+          fill: false,
+        },
+        {
+          label: "Wind Speed (kph)",
+          data: windSpeed,
+          borderColor: "green",
+          backgroundColor: "green",
+          fill: false,
         },
       ],
     },
+  });
 
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: "bottom",
+  const ctx1 = document.getElementById("chart1").getContext("2d");
+
+  chart1Instance = new Chart(ctx1, {
+    type: "bar",
+    data: {
+      labels: ["Today"],
+      datasets: [
+        {
+          label: "Max Temp (°C)",
+          data: [todayMax],
+          borderColor: "red",
+          backgroundColor: "red",
+          fill: false,
         },
-      },
+        {
+          label: "Min Temp (°C)",
+          data: [todayMin],
+          borderColor: "yellow",
+          backgroundColor: "yellow",
+          fill: false,
+        },
+        {
+          label: "Precipitation (mm)",
+          data: [todayPrecip],
+          borderColor: "blue",
+          backgroundColor: "blue",
+          fill: false,
+        },
+        {
+          label: "Wind Speed (kph)",
+          data: [todayWind],
+          borderColor: "green",
+          backgroundColor: "green",
+          fill: false,
+        },
+      ],
     },
   });
 }
 
-// ---------------- CLICK MAP ----------------
-map.on("click", async function (e) {
-  const radius = 500;
+// CODE STARTS HERE
+// HINT EVENTS MAP CLICKS
 
-  const { lat, lng } = e.latlng;
-
-  // remove old circle
-  if (circleLayer) map.removeLayer(circleLayer);
-
-  // draw radius
-  circleLayer = L.circle([lat, lng], {
-    radius: radius,
-    color: "#4CAF50",
-    fillOpacity: 0.1,
-  }).addTo(map);
-
-  // fetch real GIS data
-  const elements = await fetchOSM(lat, lng, radius);
-
-  // render map + chart
-  processAndRender(elements);
-});

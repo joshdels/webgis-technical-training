@@ -1,21 +1,68 @@
-body {
+:root {
+  --secondary-color: rgba(70, 70, 70, 0.212);
+}
+
+body,
+html{
   margin: 0;
-  display: flex;
-  font-family: Arial;
+  padding: 0;
+  overflow: hidden;
+  font-family: sans-serif;
 }
-
 #map {
-  width: 60%;
-  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-#panel {
-  width: 40%;
-  padding: 40px;
-  box-sizing: border-box;
-  background: #f7f9fb;
+h3 {
+  margin-top: 10px;
+  text-align: center;
+  letter-spacing: 3px;
 }
 
-#chartBox {
-  height: 500px;
+#sidebar {
+  position: absolute;
+  top: 2%;
+  right: 1%;
+  height: 95%;
+  width: 28%;
+  background-color: rgb(255, 255, 255);
+  z-index: 1000;
+  border-radius: 8px;
+}
+
+#sidebar h1 {
+  padding: 20px;
+  text-transform: uppercase;
+  font-weight: bolder;
+  text-align: center;
+  border-bottom: 1px solid var(--secondary-color);
+  letter-spacing: 4px;
+}
+
+#chart-container {
+  position: relative;
+  z-index: 500;
+}
+
+#chart1 {
+  width: 100% !important;
+  height: 300px !important;
+  padding: 20px;
+}
+
+#chart2 {
+  width: 100% !important;
+  height: 300px !important;
+  padding: 20px;
+}
+
+#daily-barChart {
+  margin: 50px 0px;
+  border-bottom: 1px solid var(--secondary-color);
 }

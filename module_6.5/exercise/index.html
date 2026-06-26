@@ -1,8 +1,9 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>Leaflet + Weather Chart Overlay</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Land Parcels Monitoring</title>
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -12,15 +13,10 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="container">
-      <main id="map"></main>
-
-      <aside id="sidebar">
-        <h1>Open Weather</h1>
-        <h3 id="daily-barChart">Daily Weather of Philippines</h3>
-        <canvas id="chart"></canvas>
-      </aside>
+    <div id="map"></div>
+    <div class="chart-container">
+      <canvas id="chart"></canvas>
     </div>
-    <script src="index.js"></script>
   </body>
+  <script src="map.js"></script>
 </html>

@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  display: flex;
+  font-family: Arial;
+}
+
+#map {
+  width: 60%;
+  height: 100vh;
+}
+
+#panel {
+  width: 40%;
+  padding: 40px;
+  box-sizing: border-box;
+  background: #f7f9fb;
+}
+
+#chartBox {
+  height: 500px;
+}
